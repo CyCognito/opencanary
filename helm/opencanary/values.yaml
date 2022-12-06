@@ -18,7 +18,7 @@ tag: latest
 replicas: 1
 resources:
   requests:
-    memory: 1Gi
+    memory: 64Mib
     cpu: 100m
   limits:
     memory: 2Gi
