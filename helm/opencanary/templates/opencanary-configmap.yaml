@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Release.Name }}-config"
+data:
+  .opencanary.conf: {{ toYaml .Values.opencanary_conf | indent 4 }}

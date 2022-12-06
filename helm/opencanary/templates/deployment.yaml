@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: "{{ .Release.Namespace }}"
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
+  name: '{{ template "fullname" . }}'
+  labels:
+    app: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/name: "{{ .Release.Name }}"
+    helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}"
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/opencanary-configmap.yaml") . | sha256sum }}
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: opencanary-conf
+          configMap:
+            name: "{{ .Release.Name }}-config"
+      containers:
+        - name: "{{ .Chart.Name }}"
+          volumeMounts:
+            - name: opencanary-conf
+              mountPath: /root/
+          securityContext:
+            allowPrivilegeEscalation: false
+          image: "{{ .Values.image_repo }}:{{ .Values.tag }}"
+          ports:
+            {{- range .Values.tcp_ports }}
+             - containerPort: {{ . }}
+             {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
