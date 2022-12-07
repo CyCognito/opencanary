@@ -22,14 +22,14 @@ spec:
       labels:
         app: "{{ .Release.Name }}"
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/opencanary-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/opencanary-config.yaml") . | sha256sum }}
     spec:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
       volumes:
         - name: opencanary-conf
-          configMap:
+          secret:
             name: "{{ .Release.Name }}-config"
       containers:
         - name: "{{ .Chart.Name }}"
@@ -39,6 +39,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
           image: "{{ .Values.image_repo }}:{{ .Values.tag }}"
+          imagePullPolicy: Always
           ports:
             {{- range .Values.tcp_ports }}
              - containerPort: {{ . }}

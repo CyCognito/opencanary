@@ -8,8 +8,7 @@ service:
     networking.gke.io/internal-load-balancer-allow-global-access: "true"
 
 tcp_ports:
-  - 3306
-  - 3389
+  - 80
   - 21
 
 image_repo: eu.gcr.io/cyco-main/opencanary
@@ -34,7 +33,7 @@ opencanary_conf: |-
         "ftp.port": 21,
         "ftp.banner": "FTP server ready",
         "http.banner": "Apache/2.2.22 (Ubuntu)",
-        "http.enabled": false,
+        "http.enabled": true,
         "http.port": 80,
         "http.skin": "nasLogin",
         "http.skin.list": [
@@ -91,7 +90,7 @@ opencanary_conf: |-
         "portscan.lorate": 3,
         "smb.auditfile": "/var/log/samba-audit.log",
         "smb.enabled": false,
-        "mysql.enabled": true,
+        "mysql.enabled": false,
         "mysql.port": 3306,
         "mysql.banner": "5.5.43-0ubuntu0.14.04.1",
         "ssh.enabled": false,
@@ -99,7 +98,7 @@ opencanary_conf: |-
         "ssh.version": "SSH-2.0-OpenSSH_5.1p1 Debian-4",
         "redis.enabled": false,
         "redis.port": 6379,
-        "rdp.enabled": true,
+        "rdp.enabled": false,
         "rdp.port": 3389,
         "sip.enabled": false,
         "sip.port": 5060,
@@ -138,6 +137,6 @@ opencanary_conf: |-
         "mssql.enabled": false,
         "mssql.version": "2012",
         "mssql.port":1433,
-        "vnc.enabled": true,
+        "vnc.enabled": false,
         "vnc.port":5000
     }
